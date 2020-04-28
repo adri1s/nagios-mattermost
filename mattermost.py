@@ -62,7 +62,8 @@ def emoji(notificationtype):
         "RECOVERY": ":white_check_mark: ",
         "PROBLEM": ":fire: ",
         "DOWNTIMESTART": ":clock10: ",
-        "DOWNTIMEEND": ":sunny: "
+        "DOWNTIMEEND": ":sunny: ",
+        "ACKNOWLEDGEMENT": ":ok_hand: "
     }.get(notificationtype, "")
 
 
