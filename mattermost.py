@@ -44,7 +44,7 @@ def parse():
     parser.add_argument('--servicedesc', help='Service Description')
     parser.add_argument('--servicestate', help='Service State')
     parser.add_argument('--serviceoutput', help='Service Output')
-    parser.add_argument('--cgiurl', help='Link to extinfo.cgi on your Nagios instance')
+    parser.add_argument('--cgiurl', help='Link to global cgi on your Nagios instance')
     parser.add_argument('--version', action='version',
                         version='% (prog)s {version}'.format(version=VERSION))
     args = parser.parse_args()
@@ -71,9 +71,9 @@ def text(args):
     template_host = "__{notificationtype}__ {hostalias} is {hoststate}\n{hostoutput}" # noqa
     template_service = "__{notificationtype}__ {hostalias} at {hostaddress}/{servicedesc} is {servicestate}\n{serviceoutput}" # noqa
     if args.hoststate is not None:
-        template_cgiurl = " [View :link:]({cgiurl}?type=1&host={hostalias})"
+        template_cgiurl = " [:link: View]({cgiurl}/extinfo.cgi?type=1&host={hostalias}) | [Ack]({cgiurl}/cmd.cgi?cmd_typ=34&host={hostalias}&service={servicedesc})"
     elif args.servicestate is not None:
-        template_cgiurl = " [View :link:]({cgiurl}?type=2&host={hostalias}&service={servicedesc})"
+        template_cgiurl = " [:link: View]({cgiurl}/extinfo.cgi?type=2&host={hostalias}&service={servicedesc}) | [Ack]({cgiurl}/cmd.cgi?cmd_typ=34&host={hostalias}&service={servicedesc})"
     template = template_service if args.servicestate else template_host
 
     text = emoji(args.notificationtype) + template.format(**vars(args))
