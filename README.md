@@ -25,51 +25,9 @@ The steps below are for a Nagios 4 server but should work with minimal modificat
 
 2. Create an *Incoming Webhook* integration for the approriate team and note the provided URL.
 
-3. Create the command definitions in your Nagios configuration:
+3. copy configuration `mattermost.cfg` to `/etc/nagios4/conf.d/`  and upgrade parameter <MATTERMOSTE_URL>, <MATTERMOSTE_CHANNEL> and <NAGIOS_CGIURL>
 
-
-```
-define command {
-    command_name notify-service-by-mattermost
-    command_line /usr/local/nagios/libexec/mattermost.py --url [MATTERMOST-WEBHOOK-URL] \
-                                                         --channel [OPTIONAL-MATTERMOST-CHANNEL] \
-                                                         --notificationtype "$NOTIFICATIONTYPE$" \
-                                                         --hostalias "$HOSTNAME$" \
-                                                         --hostaddress "$HOSTADDRESS$" \
-                                                         --servicedesc "$SERVICEDESC$" \
-                                                         --servicestate "$SERVICESTATE$" \
-                                                         --serviceoutput "$SERVICEOUTPUT$"
-}
-
-define command {
-    command_name notify-host-by-mattermost
-    command_line /usr/local/nagios/libexec/mattermost.py --url [MATTERMOST-WEBHOOK-URL] \
-                                                         --channel [OPTIONAL-MATTERMOST-CHANNEL] \
-                                                         --notificationtype "$NOTIFICATIONTYPE$" \
-                                                         --hostalias "$HOSTNAME$" \
-                                                         --hostaddress "$HOSTADDRESS$" \
-                                                         --hoststate "$HOSTSTATE$" \
-                                                         --hostoutput "$HOSTOUTPUT$"
-}
-```
-
-4. Create the contact definition in your Nagios configuration:
-
-```
-define contact {
-    contact_name                            mattermost
-    alias                                   Mattermost
-    service_notification_period             24x7
-    host_notification_period                24x7
-    service_notification_options            w,u,c,r
-    host_notification_options               d,r
-    host_notification_commands              notify-host-by-mattermost
-    service_notification_commands           notify-service-by-mattermost
-}
-```
-
-5. Add the contact to a contact group in your Nagios configuration:
-
+4. Add the contact to a contact group in your Nagios configuration:
 ```
 define contactgroup{
     contactgroup_name       network-admins
