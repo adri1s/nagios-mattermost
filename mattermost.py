@@ -35,8 +35,7 @@ def parse():
                         default='Nagios')
     parser.add_argument('--iconurl', help='URL of icon to use for username',
                         default='https://slack.global.ssl.fastly.net/7bf4/img/services/nagios_128.png') # noqa
-    parser.add_argument('--notificationtype', help='Notification Type',
-                        required=True)
+    parser.add_argument('--notificationtype', help='Notification Type',required=True)
     parser.add_argument('--hostalias', help='Host Alias', required=True)
     parser.add_argument('--hostaddress', help='Host Address', required=True)
     parser.add_argument('--hoststate', help='Host State')
@@ -68,12 +67,17 @@ def emoji(notificationtype):
 
 
 def text(args):
-    template_host = "__{notificationtype}__ {hostalias} is {hoststate}\n{hostoutput}" # noqa
-    template_service = "__{notificationtype}__ {hostalias} at {hostaddress}/{servicedesc} is {servicestate}\n{serviceoutput}" # noqa
+    template_host = "__{notificationtype}__ {hostalias} is {hoststate}\n{hostoutput}"
+    template_service = "__{notificationtype}__ {hostalias} at {hostaddress}/{servicedesc} is {servicestate}\n{serviceoutput}"
     if args.hoststate is not None:
-        template_cgiurl = " [:link: View]({cgiurl}/extinfo.cgi?type=1&host={hostalias}) | [Ack]({cgiurl}/cmd.cgi?cmd_typ=34&host={hostalias}&service={servicedesc})"
+        template_cgiurl = " [:link: View]({cgiurl}/extinfo.cgi?type=1&host={hostalias})"
     elif args.servicestate is not None:
-        template_cgiurl = " [:link: View]({cgiurl}/extinfo.cgi?type=2&host={hostalias}&service={servicedesc}) | [Ack]({cgiurl}/cmd.cgi?cmd_typ=34&host={hostalias}&service={servicedesc})"
+        template_cgiurl = " [:link: View]({cgiurl}/extinfo.cgi?type=2&host={hostalias}&service={servicedesc})"
+    if args.notificationtype == "PROBLEM":
+        if args.hoststate is not None:
+            template_cgiurl += " | [Ack]({cgiurl}/cmd.cgi?cmd_typ=34&host={hostalias}&service={servicedesc})"
+        elif args.servicestate is not None:
+            template_cgiurl += " | [Ack]({cgiurl}/cmd.cgi?cmd_typ=34&host={hostalias}&service={servicedesc})"
     template = template_service if args.servicestate else template_host
 
     text = emoji(args.notificationtype) + template.format(**vars(args))
